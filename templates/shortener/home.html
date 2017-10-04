@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}Wasp URL{% endblock %}
+
+{% block content %}
+  <form method="post">
+    {% csrf_token %}
+    {% include 'includes/form.html' %}
+    <button type="submit" class="btn btn-success">Enter</button>
+  </form>
+{% endblock %}
