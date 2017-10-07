@@ -10,6 +10,7 @@ from ..models import User, Urls
 
 class HomeTests(TestCase):
     def setUp(self):
+        """SetUp to get response page."""
         self.user = User.objects.create_user("testusername")
         self.home_url = reverse('home')
         self.response = self.client.get(self.home_url)

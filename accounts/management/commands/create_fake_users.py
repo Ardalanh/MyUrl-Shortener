@@ -1,5 +1,5 @@
 from django.core.management import BaseCommand
-from shortener.models import User
+from django.contrib.auth.models import User
 
 import urllib.request
 import json
@@ -11,7 +11,6 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         """Add the count argument to the command."""
         parser.add_argument('count', nargs='+', type=int)
-# A command must define handle()
 
     def handle(self, *args, **options):
         """Get the number of fake users. default is 10."""
@@ -36,16 +35,13 @@ def get_and_save(number_of_users):
         except:
             js = None
         for i, user_dict in enumerate(js['results']):
-            user = User.objects.create_user(user_dict["login"]["username"])
-            user.first_name = user_dict["name"]["first"]
-            user.last_name = user_dict["name"]["last"]
-            user.email = user_dict["email"]
-            user.password = user_dict["login"]["password"]
+            user = User.objects.create_user(
+                username=user_dict["login"]["username"],
+                first_name=user_dict["name"]["first"],
+                last_name=user_dict["name"]["last"],
+                email=user_dict["email"],
+                password=user_dict["login"]["password"]
+            )
             user.save()
-            # print("First Name= ", user_dict["name"]["first"])
-            # print("Last Name= ", user_dict["name"]["last"])
-            # print("Email= ", user_dict["email"])
-            # print("Username= ", user_dict["login"]["username"])
-            # print("Password= ", user_dict["login"]["password"])
         print(number_of_users, "Users have been created!")
         # print(json.dumps(js, indent=4))

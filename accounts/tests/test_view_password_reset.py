@@ -12,88 +12,95 @@ from django.test import TestCase
 
 class PasswordResetTests(TestCase):
     def setUp(self):
+        """Setup for getting response page."""
         url = reverse('password_reset')
         self.response = self.client.get(url)
 
     def test_status_code(self):
+        """Success status code."""
         self.assertEquals(self.response.status_code, 200)
 
     def test_view_function(self):
+        """The url '/reset/' runs the corect view."""
         view = resolve('/reset/')
         self.assertEquals(view.func.view_class, auth_views.PasswordResetView)
 
     def test_csrf(self):
+        """Check for existing csrf tag."""
         self.assertContains(self.response, 'csrfmiddlewaretoken')
 
     def test_contains_form(self):
+        """Should contain the PassowrdResetForm."""
         form = self.response.context.get('form')
         self.assertIsInstance(form, PasswordResetForm)
 
     def test_form_inputs(self):
-        '''
+        """
         The view must contain two inputs: csrf and email
-        '''
+        """
         self.assertContains(self.response, '<input', 2)
         self.assertContains(self.response, 'type="email"', 1)
 
 
 class SuccessfulPasswordResetTests(TestCase):
     def setUp(self):
+        """Setup response page with email."""
         email = 'john@doe.com'
         User.objects.create_user(username='john', email=email, password='123abcdef')
         url = reverse('password_reset')
         self.response = self.client.post(url, {'email': email})
 
     def test_redirection(self):
-        '''
+        """
         A valid form submission should redirect the user to `password_reset_done` view
-        '''
+        """
         url = reverse('password_reset_done')
         self.assertRedirects(self.response, url)
 
     def test_send_password_reset_email(self):
+        """Email should be send once."""
         self.assertEqual(1, len(mail.outbox))
 
 
 class InvalidPasswordResetTests(TestCase):
     def setUp(self):
+        """Setup response with an non existing email."""
         url = reverse('password_reset')
         self.response = self.client.post(url, {'email': 'donotexist@email.com'})
 
     def test_redirection(self):
-        '''
-        Even invalid emails in the database should
-        redirect the user to `password_reset_done` view
-        '''
+        """
+        Even invalid emails in the database should redirect the user to `password_reset_done` view
+        """
         url = reverse('password_reset_done')
         self.assertRedirects(self.response, url)
 
     def test_no_reset_email_sent(self):
+        """No emails should be sent."""
         self.assertEqual(0, len(mail.outbox))
 
 
 class PasswordResetDoneTests(TestCase):
     def setUp(self):
+        """Setup response for password reset done."""
         url = reverse('password_reset_done')
         self.response = self.client.get(url)
 
     def test_status_code(self):
+        """Success status code."""
         self.assertEquals(self.response.status_code, 200)
 
     def test_view_function(self):
+        """The url '/reset/done/' runs the corect view."""
         view = resolve('/reset/done/')
         self.assertEquals(view.func.view_class, auth_views.PasswordResetDoneView)
 
 
 class PasswordResetConfirmTests(TestCase):
     def setUp(self):
+        """Create a valid password reset token."""
         user = User.objects.create_user(username='john', email='john@doe.com', password='123abcdef')
 
-        '''
-        create a valid password reset token
-        based on how django creates the token internally:
-        https://github.com/django/django/blob/1.11.5/django/contrib/auth/forms.py#L280
-        '''
         self.uid = urlsafe_base64_encode(force_bytes(user.pk)).decode()
         self.token = default_token_generator.make_token(user)
 
@@ -101,36 +108,36 @@ class PasswordResetConfirmTests(TestCase):
         self.response = self.client.get(url, follow=True)
 
     def test_status_code(self):
+        """Success status code."""
         self.assertEquals(self.response.status_code, 200)
 
     def test_view_function(self):
+        """The generated url with tolens should run the corect view."""
         view = resolve('/reset/{uidb64}/{token}/'.format(uidb64=self.uid, token=self.token))
         self.assertEquals(view.func.view_class, auth_views.PasswordResetConfirmView)
 
     def test_csrf(self):
+        """Check for existing csrf tag in response page."""
         self.assertContains(self.response, 'csrfmiddlewaretoken')
 
     def test_contains_form(self):
+        """The view has to contain SetPasswordForm."""
         form = self.response.context.get('form')
         self.assertIsInstance(form, SetPasswordForm)
 
     def test_form_inputs(self):
-        '''
-        The view must contain two inputs: csrf and two password fields
-        '''
+        """The view must contain two inputs: csrf and two password fields."""
         self.assertContains(self.response, '<input', 3)
         self.assertContains(self.response, 'type="password"', 2)
 
 
 class InvalidPasswordResetConfirmTests(TestCase):
     def setUp(self):
+        """invalidate the token by changing the password."""
         user = User.objects.create_user(username='john', email='john@doe.com', password='123abcdef')
         uid = urlsafe_base64_encode(force_bytes(user.pk)).decode()
         token = default_token_generator.make_token(user)
 
-        '''
-        invalidate the token by changing the password
-        '''
         user.set_password('abcdef123')
         user.save()
 
@@ -138,9 +145,11 @@ class InvalidPasswordResetConfirmTests(TestCase):
         self.response = self.client.get(url)
 
     def test_status_code(self):
+        """Success status code."""
         self.assertEquals(self.response.status_code, 200)
 
     def test_html(self):
+        """The view should have link to password reset view."""
         password_reset_url = reverse('password_reset')
         self.assertContains(self.response, 'invalid password reset link')
         self.assertContains(self.response, 'href="{0}"'.format(password_reset_url))
@@ -148,12 +157,15 @@ class InvalidPasswordResetConfirmTests(TestCase):
 
 class PasswordResetCompleteTests(TestCase):
     def setUp(self):
+        """Setup for getting resposne."""
         url = reverse('password_reset_complete')
         self.response = self.client.get(url)
 
     def test_status_code(self):
+        """Success status code."""
         self.assertEquals(self.response.status_code, 200)
 
     def test_view_function(self):
+        """The url '/reset/complete/' runs the corect view."""
         view = resolve('/reset/complete/')
         self.assertEquals(view.func.view_class, auth_views.PasswordResetCompleteView)

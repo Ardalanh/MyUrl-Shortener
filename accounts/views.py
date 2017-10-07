@@ -5,6 +5,7 @@ from .forms import SignUpForm
 
 
 def signup(request):
+    """Signup view contains the UserCreationForm plus email field."""
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():

@@ -7,7 +7,7 @@ class NewUrlForm(forms.ModelForm):
         widget=forms.URLInput(),
         label="Enter URL",
         max_length=4000,
-        help_text='The max length is 4000 characters. "also http://" is requried',
+        help_text='The max length is 4000 characters. also "http://" is requried',
         initial='http://'
     )
 

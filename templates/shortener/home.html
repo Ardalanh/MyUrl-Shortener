@@ -3,9 +3,14 @@
 {% block title %}Wasp URL{% endblock %}
 
 {% block content %}
-  <form method="post">
-    {% csrf_token %}
-    {% include 'includes/form.html' %}
-    <button type="submit" class="btn btn-success">Enter</button>
-  </form>
+
+<div class="row justify-content-center mt-5">
+  <div class="col-lg-6 col-md-7 col-sm-8 col-10 user_url">
+        <form method="post">
+        {% csrf_token %}
+        {% include 'includes/form.html' %}
+        <button type="submit" class="btn btn-success">Enter</button>
+        </form>
+  </div>
+</div>
 {% endblock %}

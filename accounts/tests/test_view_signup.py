@@ -8,7 +8,9 @@ from ..views import signup
 
 
 class SignUpTests(TestCase):
+
     def setUp(self):
+        """Setup for getting response page."""
         url = reverse('signup')
         self.response = self.client.get(url)
 
@@ -23,22 +25,27 @@ class SignUpTests(TestCase):
         self.assertContains(self.response, 'type="password"', 2)
 
     def test_signup_status_code(self):
+        """Success status code."""
         self.assertEquals(self.response.status_code, 200)
 
     def test_sginup_url_resolves_signup_view(self):
+        """The '/signup/' url runs the correct view."""
         view = resolve('/signup/')
         self.assertEquals(view.func, signup)
 
     def test_contains_form(self):
+        """The page has to contain SignUpform."""
         form = self.response.context.get('form')
         self.assertIsInstance(form, SignUpForm)
 
     def test_csrf(self):
+        """Check for existing csrf tag."""
         self.assertContains(self.response, 'csrfmiddlewaretoken')
 
 
 class SuccessfulSignUpTests(TestCase):
     def setUp(self):
+        """Setup for getting response page and home_url."""
         url = reverse('signup')
         data = {
             'username': 'test_username',
@@ -66,6 +73,7 @@ class SuccessfulSignUpTests(TestCase):
 
 class InvalidSignUpTests(TestCase):
     def setUp(self):
+        """Setup for 3 responses, -no data -wrong data - empty data."""
         url = reverse('signup')
         self.response = self.client.post(url, {})
         data1 = {
@@ -90,6 +98,7 @@ class InvalidSignUpTests(TestCase):
         self.assertEquals(self.response2.status_code, 200)
 
     def test_form_errors(self):
+        """Form should contains error."""
         form = self.response.context.get('form')
         self.assertTrue(form.errors)
         form1 = self.response1.context.get('form')
@@ -98,4 +107,5 @@ class InvalidSignUpTests(TestCase):
         self.assertTrue(form.errors)
 
     def test_dont_create_user(self):
+        """No user should be created."""
         self.assertFalse(User.objects.exists())

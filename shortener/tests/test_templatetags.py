@@ -4,6 +4,7 @@ from ..templatetags.form_tags import field_type, input_class
 
 
 class ExampleForm(forms.Form):
+    """Sample form."""
     name = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput())
 
@@ -13,6 +14,7 @@ class ExampleForm(forms.Form):
 
 class FieldTypeTests(TestCase):
     def test_field_widget_type(self):
+        """If the type of inputs are corect."""
         form = ExampleForm()
         self.assertEquals('TextInput', field_type(form['name']))
         self.assertEquals('PasswordInput', field_type(form['password']))
