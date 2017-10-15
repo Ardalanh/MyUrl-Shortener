@@ -8,13 +8,12 @@
   <div class="row justify-content-center">
     <div class="col-lg-6 col-md-8 col-sm-10 mt-5">
       <div class="info p-3 pr-0">
-        <p>Shortened URL:<a href="{{ short_url  }}"> {{ short_url }} </a></p>
-        <p>URL Submited:<a href="{{url_obj.user_url}}"> {{url_obj.user_url}} </a> </p>
-        <p>Count: {{url_obj.count}} </p>
-        <p>Created by username: {{url_obj.created_by}} </p>
-        <p>First name: {{url_obj.created_by.first_name}} </p>
-        <p>last name: {{url_obj.created_by.last_name}} </p>
-        <p>Email: {{url_obj.created_by.email}} </p>
+        <p>Shortened URL: <a href="{% url 'follow' url_obj.short_id  %}">{{host}}/{{ url_obj.short_id}}</a></p>
+        <p>URL Submited: <a href="{{url_obj.user_url}}">{{url_obj.get_user_url}}</a> </p>
+        <p>Count: {{url_obj.count}}</p>
+        <p>Created by username: {{url_obj.created_by}}</p>
+        <p>Name: {{url_obj.created_by.first_name}}, {{url_obj.created_by.last_name}}</p>
+        <p>Email: {{url_obj.created_by.email}}</p>
       </div>
     </div>
   </div>

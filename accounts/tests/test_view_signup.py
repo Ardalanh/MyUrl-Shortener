@@ -4,7 +4,7 @@ from django.urls import resolve
 from django.test import TestCase
 
 from ..forms import SignUpForm
-from ..views import signup
+from ..views import SignupView
 
 
 class SignUpTests(TestCase):
@@ -16,11 +16,11 @@ class SignUpTests(TestCase):
 
     def test_form_inputs(self):
         """
-        The view must contain five inputs.
-        csrf, username, email, password1, password2
+        The view must contain seven inputs.
+        csrf, first_name, last_name username, email, password1, password2
         """
-        self.assertContains(self.response, '<input', 5)
-        self.assertContains(self.response, 'type="text"', 1)
+        self.assertContains(self.response, '<input', 7)
+        self.assertContains(self.response, 'type="text"', 3)
         self.assertContains(self.response, 'type="email"', 1)
         self.assertContains(self.response, 'type="password"', 2)
 
@@ -31,7 +31,7 @@ class SignUpTests(TestCase):
     def test_sginup_url_resolves_signup_view(self):
         """The '/signup/' url runs the correct view."""
         view = resolve('/signup/')
-        self.assertEquals(view.func, signup)
+        self.assertEquals(view.func.view_class, SignupView)
 
     def test_contains_form(self):
         """The page has to contain SignUpform."""
@@ -48,6 +48,8 @@ class SuccessfulSignUpTests(TestCase):
         """Setup for getting response page and home_url."""
         url = reverse('signup')
         data = {
+            'first_name': 'John',
+            'last_name': 'Wick',
             'username': 'test_username',
             'email': 'testmail@test.com',
             'password1': 'abcABC123',
@@ -77,6 +79,8 @@ class InvalidSignUpTests(TestCase):
         url = reverse('signup')
         self.response = self.client.post(url, {})
         data1 = {
+            'first_name': 'John',
+            'last_name': 'Wick',
             'username': 'test_username',
             'email': 'wrongemailformat@',
             'password1': 'abcABC123',
@@ -84,6 +88,8 @@ class InvalidSignUpTests(TestCase):
         }
         self.response1 = self.client.post(url, data1)
         data2 = {
+            'first_name': '',
+            'last_name': '',
             'username': '',
             'email': '',
             'password1': '',

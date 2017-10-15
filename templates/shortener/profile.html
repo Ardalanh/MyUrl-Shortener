@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}URL Profile{% endblock %}
+{% block content %}
+    {% if user_profile == user or user.is_staff %}
+    <div class="container">
+      <div class=" row justify-content-center">
+        <div class="card info">
+          <div class="card-body">
+             <h5 class="card-title">{{user_profile.username}}</h5>
+             <p> <em>Name: </em>{{user_profile.first_name}}</p>
+             <p> <em>Last Name: </em>{{user_profile.last_name}}</p>
+             <p> <em>Email: </em>{{user_profile.email}}</p>
+          </div>
+        </div>
+      </div>
+      <div class=" row justify-content-center">
+        <table class="table table-sm table-inverse table-striped">
+          <thead class="thead">
+            <tr>
+              <th>Shortened URL</th>
+              <th>URL Submited</th>
+              <th>Clicks</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for url in urls %}
+              <tr>
+                <td><a href="{% url 'follow' url.short_id %}"> {{ host }}/{{url.short_id }}</a></td>
+                <td><a href="{{ url.user_url}}"> {{ url.get_user_url}} </a></td>
+                <td>{{url.count}}</td>
+                <td>{{url.created_at}}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% else %}
+    <div class="container">
+      <div class="card-body">
+        <div class="alert alert-info" role="alert">
+          <p>Sorry, You can't access other profiles!</p>
+          <a class="btn btn-primary" href="{% url 'profile' user.username %}" role="button">My profile</a>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+{% endblock %}

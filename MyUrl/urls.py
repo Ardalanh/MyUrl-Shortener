@@ -6,8 +6,8 @@ from accounts import views as accounts_view
 from shortener import views
 
 urlpatterns = [
-    url(r'^$', views.home, name='home'),
-    url(r'^signup/$', accounts_view.signup, name='signup'),
+    url(r'^$', views.HomeView.as_view(), name='home'),
+    url(r'^signup/$', accounts_view.SignupView.as_view(), name='signup'),
     url(r'^login/$', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     url(r'^logout/$', auth_views.LogoutView.as_view(), name='logout'),
     url(r'^reset/$',
@@ -33,6 +33,7 @@ urlpatterns = [
         auth_views.PasswordChangeDoneView.as_view(template_name='password_change_done.html'),
         name='password_change_done'),
     url(r'^admin/', admin.site.urls),
+    url(r'^u/(?P<user_name>\w+)', views.profile, name='profile'),
     url(r'^(?P<short_id>\w+)', views.follow, name='follow'),
     url(r'^!(?P<short_id>\w+)', views.info, name='info'),
 ]
