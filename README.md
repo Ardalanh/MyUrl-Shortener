@@ -15,3 +15,12 @@ A sample url shortener site as an interview task.
 -Profile page is only accessible by the owner and admins
 
 -Custom manage.py shell command "create_fake_users #", for adding # fake users from randomuser.me
+
+Homepage:
+![alt text](https://github.com/Ardalanh/MyUrl_Shortener/blob/master/screen_shots/home.png "Home")
+
+Info about submited URL:
+![alt text](https://github.com/Ardalanh/MyUrl_Shortener/blob/master/screen_shots/url_info.png "Url Info")
+
+Profile:
+![alt text](https://github.com/Ardalanh/MyUrl_Shortener/blob/master/screen_shots/profile.png "Profile")
